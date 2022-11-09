@@ -4,6 +4,7 @@ import { BsFillFlagFill } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { deletePotentialCountries, setPotentialCountries } from "../redux/slices/potentialCountriesSlice";
 import { selectDisplay, deleteDisplayCountry} from "../redux/slices/displayCountrySlice";
+import { setLoadingFalse, setLoadingTrue } from "../redux/slices/loadingSlice";
 
 
 const Header = () => {
@@ -32,15 +33,18 @@ const Header = () => {
                 />
                 <button
                     onClick={() => {
+                        dispatch(setLoadingTrue());
                         axios
                             .get(`https://restcountries.com/v3.1/name/${input}`)
                             .then((res) => {
                                 dispatch(deleteDisplayCountry());
                                 dispatch(deletePotentialCountries());
                                 dispatch(setPotentialCountries(res.data));
-                                
+                                dispatch(setLoadingFalse());
                             })
                             .catch((err) => {
+                                dispatch(setLoadingFalse());
+                                console.log(err);
                                 alert(
                                     "No countries found that match your search!"
                                 );
